@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/customers/update}" method="post" th:object="${customer}">
+    <input th:field="*{id}" type="hidden"/>
+    <label>Name</label>
+    <input th:field="*{name}" type="text" name="name">
+    <label>Email</label>
+    <input th:field="*{email}" type="text" name="email">
+    <label>Address</label>
+    <input th:field="*{address}" type="text" name="address">
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>
