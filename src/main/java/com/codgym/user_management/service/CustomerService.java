@@ -29,7 +29,8 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public void save(Customer customer) {
-        customerRepository.save(customer);
+        throw new RuntimeException("Hello this is Exception");
+//        customerRepository.save(customer);
     }
 
     @Override
