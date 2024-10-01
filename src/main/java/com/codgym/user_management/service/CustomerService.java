@@ -3,6 +3,8 @@ package com.codgym.user_management.service;
 import com.codgym.user_management.entity.Customer;
 import com.codgym.user_management.repository.ICustomerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +15,8 @@ public class CustomerService implements ICustomerService {
     private final ICustomerRepository customerRepository;
 
     @Override
-    public Iterable<Customer> findAll() {
-        return customerRepository.findAll();
+    public Page<Customer> findAll(Pageable pageable) {
+        return customerRepository.findAll(pageable);
     }
 
     @Override

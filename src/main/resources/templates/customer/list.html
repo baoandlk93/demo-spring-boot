@@ -50,6 +50,40 @@
     </tr>
     </tbody>
 </table>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item disabled" th:if="${!customers.hasPrevious()}">
+            <a class="page-link">Previous</a>
+        </li>
+        <li class="page-item" th:if="${customers.hasPrevious()}">
+            <a class="page-link" th:href="@{/customers(page=${customers.number - 1})}">Previous</a>
+        </li>
+        <li class="page-item" th:if="${customers.hasPrevious()}">
+            <a class="page-link" th:href="@{/customers(page=${customers.number - 1})}" th:text="${customers.number}"></a>
+        </li>
+        <li class="page-item" >
+            <a class="page-link" th:href="@{/customers(page=${customers.number})}" th:text="${customers.number + 1}"></a>
+        </li>
+        <li class="page-item" th:if="${customers.hasNext()}">
+            <a class="page-link" th:href="@{/customers(page=${customers.number+1})}" th:text="${customers.number + 2}"></a>
+        </li>
+        <li class="page-item" th:if="${customers.hasNext()}">
+            <a class="page-link">...</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" th:href="@{/customers(page=${customers.totalPages - 2})}" th:text="${customers.totalPages -1}"></a>
+        </li>
+        <li class="page-item" >
+            <a class="page-link" th:href="@{/customers(page=${customers.totalPages -1})}" th:text="${customers.totalPages}"></a>
+        </li>
+        <li class="page-item" th:if="${customers.hasNext()}">
+            <a class="page-link" th:href="@{/customers(page=${customers.number + 1})}">Next</a>
+        </li>
+        <li class="page-item disabled" th:if="${!customers.hasNext()}">
+            <a class="page-link">Next</a>
+        </li>
+    </ul>
+</nav>
 
 <script>
     const deleteCustomer = (id, name) => {

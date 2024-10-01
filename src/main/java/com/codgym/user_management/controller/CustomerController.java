@@ -4,6 +4,8 @@ import com.codgym.user_management.dto.CustomerDto;
 import com.codgym.user_management.entity.Customer;
 import com.codgym.user_management.service.ICustomerService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -21,9 +23,9 @@ public class CustomerController {
     private final ICustomerService customerService;
 
     @GetMapping
-    public ModelAndView showList() {
+    public ModelAndView showList(@PageableDefault Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("customer/list");
-        modelAndView.addObject("customers", customerService.findAll());
+        modelAndView.addObject("customers", customerService.findAll(pageable));
         return modelAndView;
     }
 
