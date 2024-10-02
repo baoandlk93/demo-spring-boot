@@ -14,17 +14,25 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/customers")
 @AllArgsConstructor
+@SessionAttributes("number")
 public class CustomerController {
     private final ICustomerService customerService;
+    @ModelAttribute("number")
+    public int number() {
+        return 0;
+    }
 
     @GetMapping
-    public ModelAndView showList(@PageableDefault Pageable pageable) {
+    public ModelAndView showList(@PageableDefault Pageable pageable, @ModelAttribute("number") int number) {
         ModelAndView modelAndView = new ModelAndView("customer/list");
+        number++;
+        modelAndView.addObject("number", number);
         modelAndView.addObject("customers", customerService.findAll(pageable));
         return modelAndView;
     }
