@@ -14,23 +14,37 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<h1>Hello world !</h1>
-<button class="btn btn-primary" type="button" onclick="loadData()">Load Data</button>
-<button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
+<div class="container">
+    <h1>Hello world !</h1>
+    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
 
-<table class="table">
-    <thead>
-    <th>STT</th>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Address</th>
-    <th>Edit</th>
-    <th>Delete</th>
-    </thead>
-    <tbody id="content">
+    <table class="table">
+        <thead>
+        <th>STT</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        </thead>
+        <tbody id="content">
 
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-start">
+            <li class="page-item disabled">
+                <button class="page-link">Previous</button>
+            </li>
+            <li class="page-item"><button class="page-link">1</button></li>
+            <li class="page-item"><button class="page-link">2</button></li>
+            <li class="page-item"><button class="page-link">3</button></li>
+            <li class="page-item">
+                <button class="page-link" >Next</button>
+            </li>
+        </ul>
+    </nav>
+</div>
 <!-- Button trigger modal -->
 
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
@@ -62,7 +76,7 @@
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -70,6 +84,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <input type="text" id="id" hidden/>
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" id="name" class="form-control" name="name">
@@ -85,12 +100,13 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-primary" onclick="updateData()">Update</button>
             </div>
         </div>
     </div>
 </div>
 <script>
+    window.onload = loadData();
     function loadData() {
         document.getElementById("content").innerHTML = "";
         $.ajax({
@@ -104,9 +120,11 @@
                     <td>${data.content[i].name}</td>
                     <td>${data.content[i].email}</td>
                     <td>${data.content[i].address}</td>
-                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Edit
-</button></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="getDataById(${data.content[i].id})">
+                          Edit
+                        </button>
+                    </td>
                     <td><button type="button" class="btn btn-danger" onclick="deleteCustomer(${data.content[i].id})">Delete</button></td>
                     </tr>
                     `
@@ -168,7 +186,7 @@
     }
 
     const createData = () => {
-        const  data = {
+        const data = {
             name: document.getElementById("nameCreate").value,
             email: document.getElementById("emailCreate").value,
             address: document.getElementById("addressCreate").value
@@ -183,6 +201,56 @@
             url: "/api/customers",
             success: function (res) {
                 console.log(res)
+            },
+            error: function (data) {
+                console.log("data this error")
+                console.log(data)
+            }
+        })
+    }
+
+    const getDataById = (id) => {
+        $('#editModal').modal('show');
+        $.ajax({
+            type: "GET",
+            url: `/api/customers/${id}`,
+            success: function (data) {
+                document.getElementById("id").value = data.id
+                document.getElementById("name").value = data.name
+                document.getElementById("email").value = data.email
+                document.getElementById("address").value = data.address
+            },
+            error: function (data) {
+                console.log("data this error")
+                console.log(data)
+            }
+        })
+    }
+
+    const updateData = () => {
+        const data = {
+            id: document.getElementById("id").value,
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value
+        }
+        $.ajax({
+            type: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(data),
+            url: "/api/customers",
+            success: async function (res) {
+                await $('#editModal').modal('hide');
+                await Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Your work has been saved",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                loadData();
             },
             error: function (data) {
                 console.log("data this error")
